@@ -30,9 +30,41 @@ module.exports = function(grunt) {
 
     // Configuration to be run (and then tested).
     sitemap_generator: {
-      default_options: {
+
+      options: {
+        hostname: "http://www.myfab5.com",
+        cacheTime: 600000,
+        changeFrequency: "daily",
+        priority: 0.7,
+
+        dest: 'dist/sitemap.xml'
+      },
+
+      users: {
         options: {
-        },
+          //endpoint to fetch
+          endpoint: {
+            path: "http://api.myfab5.com/user/search/a?limit=50",
+
+            // process the raw response if your api is being dumb
+            process: function(response) {
+              return response.users;
+            }
+          },
+
+          // this function recieves an item returned from the list of things
+          // and returns the object that will be placed in the sitemap,
+          // or false if it shouldn't
+          filter: function(item) {
+            return {
+              url: "/user/" + item.username
+            };
+          }
+        }
+      },
+
+      default_options: {
+        options: {},
         files: {
           'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123'],
         },
